@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.DriveConstants;
 
@@ -24,7 +23,7 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_TalonSRX m_talonRightBack = new WPI_TalonSRX(DriveConstants.kTalonRightBack);
 
   // Gyroscope and Accelerometer
-  //private final PigeonIMU m_pidgey = new PigeonIMU(DriveConstants.kTalonLeftBack);
+  //private final PigeonIMU m_pidgey = new PigeonIMU(DriveConstants.kPidgey);
 
   // Robot drive for talon followers
   //private final DifferentialDrive m_drive = new DifferentialDrive(m_talonLeftFront, m_talonRightFront);
@@ -46,6 +45,7 @@ public class Drivetrain extends SubsystemBase {
     m_talonLeftFront.setInverted(false);
     m_talonLeftBack.setInverted(InvertType.FollowMaster);
     m_talonRightFront.setInverted(true);
+
     m_talonRightBack.setInverted(InvertType.FollowMaster);
 
     // Set Neutral mode of drive motors to coast
@@ -53,6 +53,12 @@ public class Drivetrain extends SubsystemBase {
     m_talonLeftBack.setNeutralMode(NeutralMode.Coast);
     m_talonRightFront.setNeutralMode(NeutralMode.Coast);
     m_talonRightBack.setNeutralMode(NeutralMode.Coast);
+
+    //Configure Motor Controler Neutral Deadband
+    m_talonLeftFront.configNeutralDeadband(DriveConstants.kDeadbandLeft);
+    m_talonLeftBack.configNeutralDeadband(DriveConstants.kDeadbandLeft);
+    m_talonRightFront.configNeutralDeadband(DriveConstants.kDeadbandRight);
+    m_talonRightBack.configNeutralDeadband(DriveConstants.kDeadbandRight);
 
     // Encoder Setup
     m_talonLeftFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Absolute);
@@ -89,6 +95,7 @@ public class Drivetrain extends SubsystemBase {
     
     // Pidgeon IMU Gyroscope reset to default condifguration
     //m_pidgey.configFactoryDefault();
+    //m_pidgey.setYaw(0.0);
 
   }
 
@@ -102,6 +109,7 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Inches", getAvgEncoder() * DriveConstants.kEncDistancePerPulse);
     SmartDashboard.putNumber("LeftEncoder", getLeftEncoder() * DriveConstants.kEncDistancePerPulse);
     SmartDashboard.putNumber("RightEncoder", getRightEncoder() * DriveConstants.kEncDistancePerPulse);
+    //SmartDashboard.putNumber("Pidgeon Yaw Angle", getAngle());
   }
 
   /**
@@ -112,13 +120,9 @@ public class Drivetrain extends SubsystemBase {
    * @param rotate
    */
   public void arcadeDrive(double forward, double rotate) {
-    m_talonLeftFront.set(ControlMode.PercentOutput, forward * DriveConstants.SPEED_STRAIGHT, DemandType.ArbitraryFeedForward, rotate * DriveConstants.SPEED_TURN);
-    m_talonRightFront.set(ControlMode.PercentOutput, forward * DriveConstants.SPEED_STRAIGHT, DemandType.ArbitraryFeedForward, -rotate * DriveConstants.SPEED_TURN);
-    
-    //m_talonLeftFront.set(ControlMode.PercentOutput, forward * DriveConstants.SPEED_STRAIGHT + rotate * DriveConstants.SPEED_TURN);
-    //m_talonRightFront.set(ControlMode.PercentOutput, forward * DriveConstants.SPEED_STRAIGHT - rotate * DriveConstants.SPEED_TURN);
-    
-    //m_drive.arcadeDrive(forward * DriveConstants.SPEED_STRAIGHT, rotate * DriveConstants.SPEED_TURN);
+    m_talonLeftFront.set(ControlMode.PercentOutput, (forward * DriveConstants.SPEED_STRAIGHT), DemandType.ArbitraryFeedForward, rotate * DriveConstants.SPEED_TURN);
+    m_talonRightFront.set(ControlMode.PercentOutput, (forward * DriveConstants.SPEED_STRAIGHT), DemandType.ArbitraryFeedForward, -rotate * DriveConstants.SPEED_TURN);
+
   }
 
   /**
@@ -171,4 +175,13 @@ public class Drivetrain extends SubsystemBase {
     return (getRightEncoder() + getLeftEncoder()) / 2.0;
   }
   
+  /*
+  public double getAngle() {
+    return m_pidgey.getYaw();
+  }
+
+  public void resetAngle() {
+    m_pidgey.setYaw(0.0);
+  }
+  */
 }

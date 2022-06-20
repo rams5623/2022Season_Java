@@ -28,12 +28,13 @@ public final class Constants {
 
         // Launch speed is applied to front motor
         // Launch diff is multiplied by the launch speed and applied to the back motor
-        public static final double kMaxVelocity = 7500.0;
-        public static final double kSpeedLaunch = 0.95;
+        public static final double kMaxVelocity = 0.99; // Sensor Units per 100ms
+
+        public static final double kSpeedLaunch = 0.98;
         public static final double kSpeedLaunchDiff = 1.0; // 1 = No differential
         public static final double kSpeedLaunch7 = 0.85;
         public static final double kSpeedLaunch7Diff = 1.0;
-        public static final double kSpeedLaunch9 = 0.80;
+        public static final double kSpeedLaunch9 = 0.81;
         public static final double kSpeedLaunch9Diff = 1.0;
         public static final double kSpeedLaunch11 = 0.75; // Used for low hub shots
         public static final double kSpeedLaunch11Diff = 0.333; // back motor get 1/3 of the speed
@@ -46,11 +47,16 @@ public final class Constants {
         public static final int kTalonRightFront = 2;
         public static final int kTalonRightBack = 12;
 
+        public static final int kPidgey = 7;
+
+        public static final double kDeadbandLeft = 0.10;
+        public static final double kDeadbandRight = 0.05;
+
         public static final int kPIDTimeout = 10; // miliseconds
         public static final int kPIDidx = 0; // PID Index
         public static final int kSlotidx = 0; // PID Slot Index
         public static final int kEncoderCPR = 4096; // Stadard pulse/rev for ctre encoder
-        public static final double kWheelDiameter = 6.0; // Inches
+        public static final double kWheelDiameter = 6.01; // Inches
         public static final double kEncDistancePerPulse = 
             // Assumes encoders are mounted on wheel shafts
             (kWheelDiameter * Math.PI) / (double) kEncoderCPR; // inch per encoder count
@@ -60,6 +66,8 @@ public final class Constants {
         public static final double SPEED_TURN = 0.45; //0.65
         public static final double SPEED_STRAIGHT = -0.65; //0.85
     }
+
+
 
     /**  Class for constants used in the LIFT subsystem **/
     public static final class LiftConstants {
@@ -85,13 +93,15 @@ public final class Constants {
     public static final class ClimbConstants {
         public static final int kTalonClimb = 5;
 
-        public static final double SPEED_CLIMBUP = 0.90;
+        public static final double SPEED_CLIMBUP = 0.99;
         public static final double SPEED_CLIMBDOWN = -0.80;
     }
 
     public static final class CameraConstants {
-        public static final double kSteer = 0.03;
-        public static final double kLaunch = 200.0;
+        public static final double kSteer = 0.4;
+        public static final double kLaunch = 0.00891;
         public static final double kDiff = 1.0;
+        public static final double kMaxError = 4.0;
+        public static final double kMinError = -2.0;
     }
 }
