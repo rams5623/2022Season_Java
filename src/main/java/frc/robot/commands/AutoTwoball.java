@@ -18,12 +18,9 @@ import frc.robot.subsystems.Lift;
 
 
 public class AutoTwoball extends SequentialCommandGroup {
-  // Inital drive to pick up ball
-  //private final double kRobotSpeed = 0.6; // percent output
-  private final double kFirstDistance = 55.0; // inches
-  private final double kSecondDistance = -16.0
-  ; // inches
-  private final double kLaunchSpeed = 0.85;
+  private final double kFirstDistance = 55.0; // (inches) Taxi Distance
+  private final double kSecondDistance = -16.0; // (inches) Reverse taxi distance
+  private final double kLaunchSpeed = 0.85; // Percent output for the launch motors
 
   /** Creates a new Autonomous. */
   public AutoTwoball(Drivetrain drive, Intake intake, Lift lift, Launcher launch, Cameras cam) {
