@@ -17,16 +17,16 @@ import frc.robot.subsystems.Launcher;
 import frc.robot.subsystems.Lift;
 
 
-public class Autonomous extends SequentialCommandGroup {
+public class AutoTwoball extends SequentialCommandGroup {
   // Inital drive to pick up ball
   //private final double kRobotSpeed = 0.6; // percent output
   private final double kFirstDistance = 55.0; // inches
-  private final double kSecondDistance = -14.0
+  private final double kSecondDistance = -16.0
   ; // inches
-  private final double kLaunchSpeed = 7000.0;
+  private final double kLaunchSpeed = 0.85;
 
   /** Creates a new Autonomous. */
-  public Autonomous(Drivetrain drive, Intake intake, Lift lift, Launcher launch, Cameras cam) {
+  public AutoTwoball(Drivetrain drive, Intake intake, Lift lift, Launcher launch, Cameras cam) {
     addCommands(
       // Intake On while driving to pick up the ball
       new InstantCommand(drive::setDriveBrake, drive).withTimeout(0.2),
@@ -60,14 +60,11 @@ public class Autonomous extends SequentialCommandGroup {
         // When the distance driven exceeds the desired value
         () -> drive.getAvgEncoder() <= kSecondDistance / DriveConstants.kEncDistancePerPulse,
         // Requires the drivetrain subsystem
-        drive).withTimeout(2.0),
+        drive).withTimeout(3.0),
       
+        new FireEverything(false, false, kLaunchSpeed, kLaunchSpeed, launch, lift, cam).withTimeout(5.0),
       // Launch both balls while aiming
-      parallel(
-        //new LaunchAssist(launch, cam),
-        new FireEverything(true, false, kLaunchSpeed, kLaunchSpeed, launch, lift, cam).withTimeout(5.0).beforeStarting(new WaitCommand(0.8)), // LaunchAssistance, Velocity Mode
-        new AimAssist(0.0, 0.0, drive, cam).withTimeout(5.8)
-      ),
+    
 
       // Taxi out of the Tarmac again
       new DriveStraight(drive).withTimeout(1.0),

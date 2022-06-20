@@ -5,34 +5,40 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Cameras;
 import frc.robot.subsystems.Launcher;
 
-public class LaunchBall extends CommandBase {
-  private final Launcher m_launcher;
-  private final boolean m_vel;
-  private final double m_front;
-  private final double m_back;
-
-  /** Creates a new LaunchBall. */
-  public LaunchBall(boolean vel, double front, double back, Launcher launcher) {
+public class LaunchAssist extends CommandBase {
+  Launcher m_launch;
+  Cameras m_cam;
+  /** Creates a new LaunchAssist. */
+  public LaunchAssist(Launcher launch, Cameras cam) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_launcher = launcher;
-    m_vel = vel;
-    m_front = front;
-    m_back = back;
-    addRequirements(m_launcher);
+    m_launch = launch;
+    m_cam = cam;
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    m_cam.processMode();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_launcher.launch(m_vel, m_front, m_back);
+    if (m_cam.hasTarget()) {
+      m_launch.launch(false, m_cam.getVelocityCmd(), m_cam.getVelocityCmd());
+    } else {
+      m_launch.launch(false, 0.90, 0.90);
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_launcher.stop();
+    m_cam.driveMode();
+    m_launch.stop();
   }
 
   // Returns true when the command should end.

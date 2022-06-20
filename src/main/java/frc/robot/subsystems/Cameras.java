@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.LauncherConstants;
@@ -25,9 +26,9 @@ public class Cameras extends SubsystemBase {
     // Uses processing pipelin # 0
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("pipeline").setNumber(0);
     // Starts off camera in driver mode
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("camMode").setNumber(0);
     // Starts camera with LEDs Off
-    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1);
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0);
     // Sets the camera stream to side by side
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("stream").setNumber(0);
   }
@@ -59,9 +60,9 @@ public class Cameras extends SubsystemBase {
   }
 
   public double clampValue(double in, double min, double max) {
-    if (in > max) {
+    if (in > CameraConstants.kMaxError) {
       return (double) max;
-    } else if (in < min) {
+    } else if (in < CameraConstants.kMinError) {
       return (double) min;
     } else {
       return 0.0;
@@ -69,10 +70,12 @@ public class Cameras extends SubsystemBase {
   }
 
   public double getTurnCmd() {
-    return clampValue(getTurnError() * CameraConstants.kSteer, -0.2, 0.2);
+    return clampValue(getTurnError(), -CameraConstants.kSteer, CameraConstants.kSteer);
   }
 
   public double getVelocityCmd() {
-    return (LauncherConstants.kMaxVelocity - (getHeightError() * CameraConstants.kLaunch));
+    double temp = (LauncherConstants.kMaxVelocity - (getHeightError() * CameraConstants.kLaunch));
+    SmartDashboard.putNumber("LimeVelocity", temp);
+    return temp;
   }
 }

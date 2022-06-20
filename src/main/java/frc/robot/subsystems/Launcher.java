@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 
@@ -34,8 +35,8 @@ public class Launcher extends SubsystemBase {
     m_talonFront.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     m_talonBack.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-    m_talonFront.setSensorPhase(false);
-    m_talonBack.setSensorPhase(false);
+    m_talonFront.setSensorPhase(true);
+    m_talonBack.setSensorPhase(true);
 
     m_talonFront.configNominalOutputForward(0.0, LauncherConstants.kPIDTimeout);
     m_talonBack.configNominalOutputForward(0.0, LauncherConstants.kPIDTimeout);
@@ -44,8 +45,8 @@ public class Launcher extends SubsystemBase {
     
     m_talonFront.configPeakOutputForward(1.0, LauncherConstants.kPIDTimeout);
     m_talonBack.configPeakOutputForward(1.0, LauncherConstants.kPIDTimeout);
-    m_talonFront.configPeakOutputReverse(1.0, LauncherConstants.kPIDTimeout);
-    m_talonBack.configPeakOutputReverse(1.0, LauncherConstants.kPIDTimeout);
+    m_talonFront.configPeakOutputReverse(-1.0, LauncherConstants.kPIDTimeout);
+    m_talonBack.configPeakOutputReverse(-1.0, LauncherConstants.kPIDTimeout);
 
     m_talonFront.selectProfileSlot(LauncherConstants.kSlotidx, LauncherConstants.kPIDidx);
     m_talonBack.selectProfileSlot(LauncherConstants.kSlotidx, LauncherConstants.kPIDidx);
@@ -64,8 +65,14 @@ public class Launcher extends SubsystemBase {
     m_talonBack.setSelectedSensorPosition(0, LauncherConstants.kPIDidx, LauncherConstants.kPIDTimeout);
   }
 
-  public void launch(ControlMode type, double front, double back) {
-    if (type == ControlMode.Velocity) {
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("BackEncoder", getBackEncoder() );//* DriveConstants.kEncDistancePerPulse);
+    SmartDashboard.putNumber("FrontEncoder", getFrontEncoder() );//* DriveConstants.kEncDistancePerPulse);
+  }
+
+  public void launch(boolean vel, double front, double back) {
+    if (vel) {
       m_talonFront.set(ControlMode.Velocity, front);
       m_talonBack.set(ControlMode.Velocity, back);
     } else {
@@ -75,12 +82,20 @@ public class Launcher extends SubsystemBase {
   }
 
   public void unlaunch() {
-    m_talonFront.set(ControlMode.PercentOutput, -0.5);
-    m_talonBack.set(ControlMode.PercentOutput, -0.5);
+    m_talonFront.set(ControlMode.PercentOutput, -0.7);
+    m_talonBack.set(ControlMode.PercentOutput, -0.7);
   }
 
   public void stop() {
     m_talonFront.set(ControlMode.PercentOutput, 0.0);
     m_talonBack.set(ControlMode.PercentOutput, 0.0);
+  }
+
+  public double getFrontEncoder() {
+    return m_talonFront.getSelectedSensorVelocity();
+  }
+
+  public double getBackEncoder() {
+    return m_talonBack.getSelectedSensorVelocity();
   }
 }
