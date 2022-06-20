@@ -28,6 +28,7 @@ public final class Constants {
 
         // Launch speed is applied to front motor
         // Launch diff is multiplied by the launch speed and applied to the back motor
+        public static final double kMaxVelocity = 7500.0;
         public static final double kSpeedLaunch = 0.95;
         public static final double kSpeedLaunchDiff = 1.0; // 1 = No differential
         public static final double kSpeedLaunch7 = 0.85;
@@ -36,7 +37,6 @@ public final class Constants {
         public static final double kSpeedLaunch9Diff = 1.0;
         public static final double kSpeedLaunch11 = 0.75; // Used for low hub shots
         public static final double kSpeedLaunch11Diff = 0.333; // back motor get 1/3 of the speed
-
     }
     
     /** Class for constants used in the DRIVETRAIN subsystem **/
@@ -53,10 +53,12 @@ public final class Constants {
         public static final double kWheelDiameter = 6.0; // Inches
         public static final double kEncDistancePerPulse = 
             // Assumes encoders are mounted on wheel shafts
-            (kWheelDiameter * Math.PI) / (double) kEncoderCPR;
+            (kWheelDiameter * Math.PI) / (double) kEncoderCPR; // inch per encoder count
+            // For 6 inch wheels:
+            // 1 Encoder Revolution = 4096 Encoder Counts = 1 Wheel Revolution = 18.84956 Travel Distance (Inches)
         
-        public static final double SPEED_TURN = 0.55; //0.65
-        public static final double SPEED_STRAIGHT = -0.75; //0.85
+        public static final double SPEED_TURN = 0.45; //0.65
+        public static final double SPEED_STRAIGHT = -0.65; //0.85
     }
 
     /**  Class for constants used in the LIFT subsystem **/
@@ -85,5 +87,11 @@ public final class Constants {
 
         public static final double SPEED_CLIMBUP = 0.90;
         public static final double SPEED_CLIMBDOWN = -0.80;
+    }
+
+    public static final class CameraConstants {
+        public static final double kSteer = 0.03;
+        public static final double kLaunch = 200.0;
+        public static final double kDiff = 1.0;
     }
 }

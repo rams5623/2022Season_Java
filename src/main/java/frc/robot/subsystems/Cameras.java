@@ -8,7 +8,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.CameraConstants;
+import frc.robot.Constants.LauncherConstants;
 
 public class Cameras extends SubsystemBase {
   NetworkTable m_table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -68,8 +69,10 @@ public class Cameras extends SubsystemBase {
   }
 
   public double getTurnCmd() {
-    double m_turnCmd = DriveConstants.SPEED_TURN * getTurnError();
-    m_turnCmd = clampValue(m_turnCmd, -0.4, 0.4);
-    return m_turnCmd;
+    return clampValue(getTurnError() * CameraConstants.kSteer, -0.2, 0.2);
+  }
+
+  public double getVelocityCmd() {
+    return (LauncherConstants.kMaxVelocity - (getHeightError() * CameraConstants.kLaunch));
   }
 }
